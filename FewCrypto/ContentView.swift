@@ -9,10 +9,16 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var bitcoin = ""
-    @State private var dollars = 50
-    @State private var rub = 4000
-    @State private var dateStr = "never"
+//    @State private var bitcoin = ""
+//    @State private var dollars = 0
+//    @State private var rub = 0
+//    @State private var dateStr = "never"
+    
+    @AppStorage("bitcoin") private var bitcoin = "0"
+    @AppStorage("dollars") private var dollars = 0
+    @AppStorage("rub") private var rub = 0
+    @AppStorage("dateStr") private var dateStr = "Updated: Never"
+    // storing with UserDefaults
     
     @FocusState private var focus: Bool
     
@@ -59,7 +65,7 @@ struct ContentView: View {
                 }
             }
             
-            Button("do the magic") {
+            Button("Update") {
                 if let url = URL(string: "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd%2Crub") {
                     let session = URLSession(configuration: .default)
                     let task = session.dataTask(with: url) { (data, response, error) in
