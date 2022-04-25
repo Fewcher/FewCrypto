@@ -44,8 +44,30 @@ struct CryptoWidgetEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
-        Text(entry.date, style: .time)
-        //Text()
+        //Text(entry.date, style: .time)
+        HStack {
+            Text("₿ ")
+            Text("0.0123")
+        }
+        
+        HStack {
+            Text("$ ")
+            let dollars = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.integer(forKey:"dollars")
+            Text("\(dollars)")
+        }
+
+        HStack {
+            Text("₽ ")
+            let rub = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.integer(forKey: "rub")
+            Text("\(rub)")
+        }
+        
+        //Text("21 April 15:23")
+        let releaseDate = Date()
+        //let dateStr = "Updated: " + String(Date.now.formatted(date: .long, time: .shortened))
+        Text(releaseDate, format: Date.FormatStyle().month().day().hour().minute())
+        
+
     }
 }
 
@@ -59,6 +81,7 @@ struct CryptoWidget: Widget {
         }
         .configurationDisplayName("My Widget")
         .description("This is an example widget.")
+        .supportedFamilies([.systemMedium, .systemSmall]) // БОЛЬШОЙ не нужон!
     }
 }
 

@@ -81,6 +81,12 @@ struct ContentView: View {
                                                 
                                                 dateStr = "Updated: " + String(Date.now.formatted(date: .long, time: .shortened))
                                                 // date-time of last update
+                                                
+                                                let defaults = UserDefaults(suiteName: "group.FewCrypto.Fewcher")
+                                                //UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.set(dollars, forKey: "dollars")
+                                                //UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.set(rub, forKey: "rub")
+                                                defaults!.set(dollars, forKey: "dollars")
+                                                defaults!.set(rub, forKey: "rub")
                                             }
                                 } catch {
                                     print(error)
