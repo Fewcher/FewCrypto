@@ -24,7 +24,7 @@ struct Provider: IntentTimelineProvider {
 
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
+        for hourOffset in 0 ..< 5 { // не понимаю как это работает, но обновляет каждые 4 часа
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
             let entry = SimpleEntry(date: entryDate, configuration: configuration)
             entries.append(entry)
@@ -43,17 +43,20 @@ struct SimpleEntry: TimelineEntry {
 struct CryptoWidgetEntryView : View {
     var entry: Provider.Entry
 
+    @AppStorage("bitcoin") private var bitcoin = "0"
+    
     var body: some View {
         //Text(entry.date, style: .time)
         HStack {
             Text("₿ ")
-            Text("0.0123")
+            //Text("0.0123")
+            Text(bitcoin)
         }
         
         HStack {
             Text("$ ")
-            let dollars = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.integer(forKey:"dollars")
-            Text("\(dollars)")
+            let usd = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.integer(forKey:"usd")
+            Text("\(usd)")
         }
 
         HStack {

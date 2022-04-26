@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit // need this to refresh the widget by pressing the button
 
 struct ContentView: View {
     
@@ -14,20 +15,36 @@ struct ContentView: View {
 //    @State private var rub = 0
 //    @State private var dateStr = "never"
     
-    @AppStorage("bitcoin") private var bitcoin = "0"
-    @AppStorage("dollars") private var dollars = 0
-    @AppStorage("rub") private var rub = 0
-    @AppStorage("dateStr") private var dateStr = "Updated: Never"
+//    @AppStorage("bitcoin") private var bitcoin = "0"
+//    @AppStorage("usd") private var usd = 0
+//    @AppStorage("rub") private var rub = 0
     // storing with UserDefaults
+    // попробуй заменить UserDefaults(suiteName: "group.FewCrypto.Fewcher") на @AppStorage
+        // когда ВСЕ переменные были @appstorage чот не работает
+    
+        @AppStorage("bitcoin") private var bitcoin = "0"
+        //@State private var bitcoin = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.string(forKey: "bitcoin") ?? "0.11"
+        //при загрузке формы вариант со @state userdefaults показывает опциональное значение
+    
+//        @State private var usd = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.integer(forKey: "usd")
+//        @State private var rub = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.integer(forKey: "rub")
+//        @State var date = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.string(forKey: "date")
+    
+//     @AppStorage("dateStr") private var dateStr = "Updated: Never"
+//     @AppStorage("date") private var date = "Updated: Never"
+    //private var date = UserDefaults(suiteName: "group.FewCrypto_NM.Fewcher")!.string(forKey: "date")
+    //dateStr = "Updated: " + String(Date.now.formatted(date: .long, time: .shortened))
+    // date-time of last update
     
     @FocusState private var focus: Bool
     
-    //@ObservedObject var networkManager = NetworkManager()
+    @ObservedObject var networkManager = NetworkManager()
     
     var body: some View {
         Form {
-            
-            Text(dateStr)
+            let date = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.string(forKey: "date")
+            //Text(date ?? "Never")
+            Text("Updated: " + (date ?? "never"))
                 .font(.footnote)
                 .foregroundColor(.gray)
             
@@ -54,48 +71,31 @@ struct ContentView: View {
             Section {
                 HStack {
                     Text("$ ")
-                    Text("\(dollars)")
+                    //Text("\(usd)")
+//                usd = Int((Double(bitcoin) ?? 0) * Double(results.bitcoin.usd))
+//                //привожу к int чтобы убрать десятичные
+                    //Text(Int((Double(bitcoin) ?? 0) * Double(usd)))
+                    let usd = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.integer(forKey: "usd")
+                    let usdBitcoin = Int((Double(bitcoin) ?? 0) * Double(usd))
+                    Text("\(usdBitcoin)")
+                    // мне не нравится как это выглядит, но хз чо еще придумать
+                    // мне не нравится что умножение делает на лету, но я хз как убрать
                 }
             }
             
             Section {
                 HStack {
                     Text("₽ ")
-                    Text("\(rub)")
+                    let rub = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.integer(forKey: "rub")
+                    let rubBitcoin = Int((Double(bitcoin) ?? 0) * Double(rub))
+                    Text("\(rubBitcoin)")
+//                rub = Int((Double(bitcoin) ?? 0) * Double(results.bitcoin.rub))
                 }
             }
             
             Button("Update") {
-                if let url = URL(string: "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd%2Crub") {
-                    let session = URLSession(configuration: .default)
-                    let task = session.dataTask(with: url) { (data, response, error) in
-                        if error == nil {
-                            let decoder = JSONDecoder()
-                            if let safeData = data {
-                                do {
-                                    let results = try decoder.decode(PriceData.self, from: safeData)
-                                            DispatchQueue.main.async {
-                                                dollars = Int((Double(bitcoin) ?? 0) * Double(results.bitcoin.usd))
-                                                rub = Int((Double(bitcoin) ?? 0) * Double(results.bitcoin.rub))
-                                                //привожу к int чтобы убрать десятичные
-                                                
-                                                dateStr = "Updated: " + String(Date.now.formatted(date: .long, time: .shortened))
-                                                // date-time of last update
-                                                
-                                                let defaults = UserDefaults(suiteName: "group.FewCrypto.Fewcher")
-                                                //UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.set(dollars, forKey: "dollars")
-                                                //UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.set(rub, forKey: "rub")
-                                                defaults!.set(dollars, forKey: "dollars")
-                                                defaults!.set(rub, forKey: "rub")
-                                            }
-                                } catch {
-                                    print(error)
-                                }
-                            }
-                        }
-                    }
-                    task.resume()
-                }
+                self.networkManager.fetchData()
+                WidgetCenter.shared.reloadAllTimelines() // reload all widgets
             }
             .toolbar {
                 ToolbarItem(placement: .keyboard) { //hide keyboard
