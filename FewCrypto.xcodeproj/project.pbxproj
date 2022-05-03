@@ -20,6 +20,8 @@
 		E049FF9428116872001FC606 /* CryptoWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = E049FF9028116870001FC606 /* CryptoWidget.intentdefinition */; };
 		E049FF9528116872001FC606 /* CryptoWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = E049FF9028116870001FC606 /* CryptoWidget.intentdefinition */; };
 		E049FF9828116872001FC606 /* CryptoWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = E049FF8728116870001FC606 /* CryptoWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E049FFBE2818393A001FC606 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F7D37280C45B200808E68 /* NetworkManager.swift */; };
+		E049FFBF28183981001FC606 /* PriceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F7D39280C482700808E68 /* PriceData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -268,8 +270,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E049FFBE2818393A001FC606 /* NetworkManager.swift in Sources */,
 				E049FF8F28116870001FC606 /* CryptoWidget.swift in Sources */,
 				E049FF9428116872001FC606 /* CryptoWidget.intentdefinition in Sources */,
+				E049FFBF28183981001FC606 /* PriceData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -36,14 +36,19 @@ struct ContentView: View {
     //dateStr = "Updated: " + String(Date.now.formatted(date: .long, time: .shortened))
     // date-time of last update
     
+    let rub = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.integer(forKey: "rub")
+    let usd = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.integer(forKey: "usd")
+    let date = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.string(forKey: "date")
+    
     @FocusState private var focus: Bool
+    
+    @State private var isShowingField = false
+    @State private var btcAdd: String = "+++"
     
     @ObservedObject var networkManager = NetworkManager()
     
     var body: some View {
         Form {
-            let date = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.string(forKey: "date")
-            //Text(date ?? "Never")
             Text("Updated: " + (date ?? "never"))
                 .font(.footnote)
                 .foregroundColor(.gray)
@@ -65,6 +70,17 @@ struct ContentView: View {
                                 }
                             }
                         }
+                    Button("+"){
+                        isShowingField.toggle()
+                    }
+                }
+                
+
+                
+                if isShowingField {
+                    //TextField("+++")
+                    TextField("?", text: $btcAdd)
+                        .transition(.slide) // gotta find good transition effect. maybe .opacity
                 }
             }
             
@@ -75,26 +91,43 @@ struct ContentView: View {
 //                usd = Int((Double(bitcoin) ?? 0) * Double(results.bitcoin.usd))
 //                //привожу к int чтобы убрать десятичные
                     //Text(Int((Double(bitcoin) ?? 0) * Double(usd)))
-                    let usd = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.integer(forKey: "usd")
+
                     let usdBitcoin = Int((Double(bitcoin) ?? 0) * Double(usd))
                     Text("\(usdBitcoin)")
                     // мне не нравится как это выглядит, но хз чо еще придумать
-                    // мне не нравится что умножение делает на лету, но я хз как убрать
+                    // мне не нравится что умножение на лету, но я хз как убрать
                 }
+                
+                Text("1 BTC = \(usd) usd")
+                    .foregroundColor(.secondary)
+                    .font(.caption)
+                    .opacity(0.5)
             }
             
             Section {
                 HStack {
                     Text("₽ ")
-                    let rub = UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.integer(forKey: "rub")
+            
                     let rubBitcoin = Int((Double(bitcoin) ?? 0) * Double(rub))
                     Text("\(rubBitcoin)")
-//                rub = Int((Double(bitcoin) ?? 0) * Double(results.bitcoin.rub))
+                    // rub = Int((Double(bitcoin) ?? 0) * Double(results.bitcoin.rub))
                 }
+                
+                Text("1 BTC = \(rub) rub")
+                    .foregroundColor(.secondary)
+                    .font(.caption)
+                    .opacity(0.5)
             }
             
+
+            
             Button("Update") {
-                self.networkManager.fetchData()
+                //self.networkManager.fetchData()
+                networkManager.fetchData { usd in } // хз почему это работает
+                
+                UserDefaults(suiteName: "group.FewCrypto.Fewcher")!.set(bitcoin, forKey: "bitcoin")
+                print(bitcoin)
+                
                 WidgetCenter.shared.reloadAllTimelines() // reload all widgets
             }
             .toolbar {

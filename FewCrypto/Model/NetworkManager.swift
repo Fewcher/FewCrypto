@@ -17,7 +17,7 @@ class NetworkManager: ObservableObject {
     // даже если убираю @published - главная форма обновляет все (три) значения и умножает на лету, но медленнее ?!
     
     
-    func fetchData() {
+    func fetchData(completion: @escaping (Int) -> Void  ) {
         if let url = URL(string: "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd%2Crub") {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { (data, response, error) in
@@ -48,6 +48,7 @@ class NetworkManager: ObservableObject {
                         } catch {
                             print(error)
                         }
+                        completion(self.usd)
                     }
                 }
             }
